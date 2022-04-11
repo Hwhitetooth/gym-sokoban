@@ -240,7 +240,8 @@ class SokobanEnv(gym.Env):
             arr_boxes = ((self.room_state == 4) + (self.room_state == 3)).view(np.int8)
             arr_player = (self.room_state == 5).view(np.int8)
 
-            return arr_walls, arr_goals, arr_boxes, arr_player
+            ob = np.stack([arr_walls, arr_goals, arr_boxes, arr_player], axis=-1)
+            return ob * 255
 
         else:
             super(SokobanEnv, self).render(mode=mode)  # just raise an exception
