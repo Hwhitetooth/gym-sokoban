@@ -1,6 +1,36 @@
+import cv2
 import numpy as np
 import pkg_resources
 import imageio
+
+resource_package = __name__
+
+# Load images, representing the corresponding situation
+box_filename = pkg_resources.resource_filename(resource_package, '/'.join(('surface', 'box.png')))
+box = imageio.imread(box_filename)
+
+box_on_target_filename = pkg_resources.resource_filename(resource_package,
+                                                         '/'.join(('surface', 'box_on_target.png')))
+box_on_target = imageio.imread(box_on_target_filename)
+
+box_target_filename = pkg_resources.resource_filename(resource_package, '/'.join(('surface', 'box_target.png')))
+box_target = imageio.imread(box_target_filename)
+
+floor_filename = pkg_resources.resource_filename(resource_package, '/'.join(('surface', 'floor.png')))
+floor = imageio.imread(floor_filename)
+
+player_filename = pkg_resources.resource_filename(resource_package, '/'.join(('surface', 'player.png')))
+player = imageio.imread(player_filename)
+
+player_on_target_filename = pkg_resources.resource_filename(resource_package,
+                                                            '/'.join(('surface', 'player_on_target.png')))
+player_on_target = imageio.imread(player_on_target_filename)
+
+wall_filename = pkg_resources.resource_filename(resource_package, '/'.join(('surface', 'wall.png')))
+wall = imageio.imread(wall_filename)
+
+surfaces = [wall, floor, box_target, box_on_target, box, player, player_on_target]
+surfaces = [cv2.resize(img, (8, 8)) for img in surfaces]
 
 
 def room_to_rgb(room, room_structure=None):
@@ -10,49 +40,21 @@ def room_to_rgb(room, room_structure=None):
     :param room_structure:
     :return:
     """
-    resource_package = __name__
-
     room = np.array(room)
     if not room_structure is None:
         # Change the ID of a player on a target
         room[(room == 5) & (room_structure == 2)] = 6
 
-    # Load images, representing the corresponding situation
-    box_filename = pkg_resources.resource_filename(resource_package, '/'.join(('surface', 'box.png')))
-    box = imageio.imread(box_filename)
-
-    box_on_target_filename = pkg_resources.resource_filename(resource_package,
-                                                             '/'.join(('surface', 'box_on_target.png')))
-    box_on_target = imageio.imread(box_on_target_filename)
-
-    box_target_filename = pkg_resources.resource_filename(resource_package, '/'.join(('surface', 'box_target.png')))
-    box_target = imageio.imread(box_target_filename)
-
-    floor_filename = pkg_resources.resource_filename(resource_package, '/'.join(('surface', 'floor.png')))
-    floor = imageio.imread(floor_filename)
-
-    player_filename = pkg_resources.resource_filename(resource_package, '/'.join(('surface', 'player.png')))
-    player = imageio.imread(player_filename)
-
-    player_on_target_filename = pkg_resources.resource_filename(resource_package,
-                                                                '/'.join(('surface', 'player_on_target.png')))
-    player_on_target = imageio.imread(player_on_target_filename)
-
-    wall_filename = pkg_resources.resource_filename(resource_package, '/'.join(('surface', 'wall.png')))
-    wall = imageio.imread(wall_filename)
-
-    surfaces = [wall, floor, box_target, box_on_target, box, player, player_on_target]
-
     # Assemble the new rgb_room, with all loaded images
-    room_rgb = np.zeros(shape=(room.shape[0] * 16, room.shape[1] * 16, 3), dtype=np.uint8)
+    room_rgb = np.zeros(shape=(room.shape[0] * 8, room.shape[1] * 8, 3), dtype=np.uint8)
     for i in range(room.shape[0]):
-        x_i = i * 16
+        x_i = i * 8
 
         for j in range(room.shape[1]):
-            y_j = j * 16
+            y_j = j * 8
             surfaces_id = room[i, j]
 
-            room_rgb[x_i:(x_i + 16), y_j:(y_j + 16), :] = surfaces[surfaces_id]
+            room_rgb[x_i:(x_i + 8), y_j:(y_j + 8), :] = surfaces[surfaces_id]
 
     return room_rgb
 
