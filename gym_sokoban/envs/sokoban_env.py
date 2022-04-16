@@ -30,7 +30,6 @@ class SokobanEnv(gym.Env):
         self.boxes_on_target = 0
 
         # Penalties and Rewards
-        # self.penalty_for_step = -0.1
         self.penalty_for_step = 0.
         self.penalty_box_off_target = -1
         self.reward_box_on_target = 1
@@ -262,6 +261,9 @@ class SokobanEnv(gym.Env):
 
     def set_maxsteps(self, num_steps):
         self.max_steps = num_steps
+
+    def set_step_penalty(self, step_penalty):
+        self.penalty_for_step = step_penalty
 
     def get_action_lookup(self):
         return ACTION_LOOKUP
