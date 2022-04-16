@@ -31,6 +31,7 @@ wall = imageio.imread(wall_filename)
 
 surfaces = [wall, floor, box_target, box_on_target, box, player, player_on_target]
 surfaces = [cv2.resize(img, (8, 8)) for img in surfaces]
+surfaces = np.stack(surfaces, axis=0)
 
 
 def room_to_rgb(room, room_structure=None):
@@ -46,15 +47,18 @@ def room_to_rgb(room, room_structure=None):
         room[(room == 5) & (room_structure == 2)] = 6
 
     # Assemble the new rgb_room, with all loaded images
-    room_rgb = np.zeros(shape=(room.shape[0] * 8, room.shape[1] * 8, 3), dtype=np.uint8)
-    for i in range(room.shape[0]):
-        x_i = i * 8
+    room_rgb = surfaces[room].transpose(0, 2, 1, 3, 4).reshape(80, 80, 3)
 
-        for j in range(room.shape[1]):
-            y_j = j * 8
-            surfaces_id = room[i, j]
+    # correct_room_rgb = np.zeros(shape=(room.shape[0] * 8, room.shape[1] * 8, 3), dtype=np.uint8)
+    # for i in range(room.shape[0]):
+    #     x_i = i * 8
 
-            room_rgb[x_i:(x_i + 8), y_j:(y_j + 8), :] = surfaces[surfaces_id]
+    #     for j in range(room.shape[1]):
+    #         y_j = j * 8
+    #         surfaces_id = room[i, j]
+
+    #         correct_room_rgb[x_i:(x_i + 8), y_j:(y_j + 8), :] = surfaces[surfaces_id]
+    # assert np.all(room_rgb == correct_room_rgb)
 
     return room_rgb
 
