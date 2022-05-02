@@ -20,7 +20,11 @@ class BoxobanEnv(SokobanEnv):
         self.split = split
         self.verbose = False
         super(BoxobanEnv, self).__init__(self.dim_room, max_steps, self.num_boxes, None)
-        
+        self.rng = np.random.RandomState(None)
+
+    def seed(self, seed):
+        super(BoxobanEnv, self).seed(seed)
+        self.rng = np.random.RandomState(seed)
 
     def reset(self):
         self.cache_path = os.path.expanduser('~/.sokoban_cache')
@@ -62,7 +66,9 @@ class BoxobanEnv(SokobanEnv):
     def select_room(self):
         
         generated_files = [f for f in listdir(self.train_data_dir) if isfile(join(self.train_data_dir, f))]
-        source_file = join(self.train_data_dir, random.choice(generated_files))
+        # source_file = join(self.train_data_dir, random.choice(generated_files))
+        src_id = self.rng.choice(len(generated_files))
+        source_file = join(self.train_data_dir, generated_files[src_id])
 
         maps = []
         current_map = []
@@ -77,7 +83,8 @@ class BoxobanEnv(SokobanEnv):
         
         maps.append(current_map)
 
-        selected_map = random.choice(maps)
+        map_id = self.rng.choice(len(maps))
+        selected_map = maps[map_id]
 
         if self.verbose:
             print('Selected Level from File "{}"'.format(source_file))
