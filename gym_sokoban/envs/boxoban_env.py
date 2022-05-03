@@ -19,8 +19,8 @@ class BoxobanEnv(SokobanEnv):
         self.difficulty = difficulty
         self.split = split
         self.verbose = False
-        self.rng = np.random.RandomState(None)
         super(BoxobanEnv, self).__init__(self.dim_room, max_steps, self.num_boxes, None)
+        self.rng = np.random.RandomState(None)
 
     def seed(self, seed):
         super(BoxobanEnv, self).seed(seed)
